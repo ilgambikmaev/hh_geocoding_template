@@ -1,4 +1,5 @@
 from geocoders.geocoder import Geocoder
+from api import API
 
 
 # Алгоритм "в лоб"
@@ -9,4 +10,12 @@ class SimpleQueryGeocoder(Geocoder):
             - Делать запросы к API для каждой area
             - Для каждого ответа формировать полный адрес
         """
-        raise NotImplementedError()
+        node = API.get_area(area_id)
+        address = node.name
+        while True:
+            if node.parent_id is None:
+                break
+            node = API.get_area(node.parent_id)
+            address = node.name + ", " + address
+
+        return address
